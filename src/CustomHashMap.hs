@@ -1,7 +1,8 @@
 module CustomHashMap
   (
   HashMap,
-  insertOrUpdateHashMapKey
+  insertOrUpdateHashMapKey,
+  removeHashMapKey
   )
 where
 
@@ -11,15 +12,15 @@ import Data.Hashable
 type HashMap a b = [Bucket a b]
 type Bucket a b = [(a,b)]
 
---removeHashMapKey :: HashMap a -> String -> HashMap a
---removeHashMapKey hashMap key = hashMap'
---  where
---    hashMap' = left ++ [bucket'] ++ right
---    bucket' = filter (\(existingKey,_) -> existingKey /= key) bucket
---    (left,(removed:right)) = splitAt index hashMap
---    bucket = hashMap !! index
---    index = getHashMapIndexFromHash hashMap key
---
+removeHashMapKey :: (Eq a ) => (Hashable a) => HashMap a b -> a -> HashMap a b
+removeHashMapKey hashMap key = hashMap'
+  where
+    hashMap' = left ++ [bucket'] ++ right
+    bucket' = filter (\(existingKey,_) -> existingKey /= key) bucket
+    (left, removed:right) = splitAt index hashMap
+    bucket = hashMap !! index
+    index = getHashMapIndexFromHash hashMap key
+
 insertOrUpdateHashMapKey :: (Eq a ) => (Hashable a) => HashMap a b -> a -> b -> HashMap a b
 insertOrUpdateHashMapKey hashMap key value = hashMap'
   where
@@ -35,7 +36,7 @@ insertOrUpdateList hashMap index (element@(key',value'):xs) = hashMap'
     hashMap' = left ++ [bucket'] ++ right
     bucket' = element:uniqueKeys
     uniqueKeys = filter (\(key,_) -> key /= key') xs
-    (left,(removed:right)) = splitAt index hashMap
+    (left, removed:right) = splitAt index hashMap
 
 --lookupHashMapKey :: HashMap a b -> a -> Maybe a
 --lookupHashMapKey hashMap key = value
@@ -47,7 +48,7 @@ insertOrUpdateList hashMap index (element@(key',value'):xs) = hashMap'
 --    index = getHashMapIndexFromHash hashMap key
 
 getHashMapIndexFromHash :: (Hashable a) => HashMap a b -> a -> Int
-getHashMapIndexFromHash hashMap key = ((hash key) `mod` (length hashMap))
+getHashMapIndexFromHash hashMap key = hash key `mod` length hashMap
 
 --findElementInBucket :: b -> Bucket a b -> a
 --findElementInBucket searchKey xs = value

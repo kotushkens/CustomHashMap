@@ -4,9 +4,8 @@ import CustomHashMap
 
 main :: IO ()
 main = do
-  let hm = [[],[],[],[]]
---  let hm2 = [[],[],[],[]]
---  insertKey 4 "hello"
-  print (insertOrUpdateHashMapKey hm "hello" 4)
---  let h6 = removeHashMapKey hm "hello"
- -- print $ show (h6 :: HashMap Int)
+  let hashMap = [[],[],[],[]]
+  let hashMap' = insertOrUpdateHashMapKey hashMap "hello" 4
+  let hashMap'' = insertOrUpdateHashMapKey hashMap' "bye" 6
+  let hashMap''' = removeHashMapKey hashMap'' "hello"
+  print $ show (hashMap''' :: HashMap String Int)
