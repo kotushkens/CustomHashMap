@@ -2,7 +2,8 @@ module CustomHashMap
   (
   HashMap,
   insertOrUpdateHashMapKey,
-  removeHashMapKey
+  removeHashMapKey,
+  lookupHashMapKey
   )
 where
 
@@ -38,19 +39,19 @@ insertOrUpdateList hashMap index (element@(key',value'):xs) = hashMap'
     uniqueKeys = filter (\(key,_) -> key /= key') xs
     (left, removed:right) = splitAt index hashMap
 
---lookupHashMapKey :: HashMap a b -> a -> Maybe a
---lookupHashMapKey hashMap key = value
---  where
---    value = case bucket of
---              [] -> Nothing
---              xs -> Just $ findElementInBucket key xs
---    bucket = hashMap !! index
---    index = getHashMapIndexFromHash hashMap key
+lookupHashMapKey :: (Eq a) => (Hashable a) => HashMap a b -> a -> Maybe b
+lookupHashMapKey hashMap key = value
+  where
+    value = case bucket of
+              [] -> Nothing
+              xs -> Just $ findElementInBucket key xs
+    bucket = hashMap !! index
+    index = getHashMapIndexFromHash hashMap key
 
 getHashMapIndexFromHash :: (Hashable a) => HashMap a b -> a -> Int
 getHashMapIndexFromHash hashMap key = hash key `mod` length hashMap
 
---findElementInBucket :: b -> Bucket a b -> a
---findElementInBucket searchKey xs = value
---  where
---    (key,value) = head $ filter (\(bucketKey,value) -> bucketKey == searchKey) xs
+findElementInBucket :: (Eq a) => a -> Bucket a b -> b
+findElementInBucket searchKey xs = value
+  where
+    (key,value) = head $ filter (\(bucketKey,value) -> bucketKey == searchKey) xs
